@@ -1,1 +1,28 @@
+graph TD
+    %% Styling and Graph Direction (Top Down)
+    subgraph Data Sources [Enterprise Ecosystem]
+        Jira[Jira Cloud: Sprints & Tickets]
+        Harvest[Harvest: Time & Billing]
+        Confluence[Confluence: Documentation]
+    end
 
+    subgraph Processing Layer [Delivery Intelligence Engine]
+        API[Webhooks & API Gateway]
+        Engine[AI Exception & Governance Engine]
+    end
+
+    subgraph Outputs [Proactive PMO Interventions]
+        Alerts[Automated Teams/Slack Alerts]
+        Briefings[Daily Executive Risk Briefings]
+    end
+
+    %% Define Flow Connections
+    Jira --> API
+    Harvest --> API
+    Confluence --> API
+
+    API --> Engine
+    Engine --> Flags[Flags: Late Items & Ownership Loops]
+    
+    Flags --> Alerts
+    Flags --> Briefings
