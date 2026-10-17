@@ -1,28 +1,40 @@
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#0A3D62', 'primaryTextColor': '#ffffff', 'primaryBorderColor': '#1A5276', 'lineColor': '#1A5276', 'secondaryColor': '#D6EAF8', 'tertiaryColor': '#F8F9F9'}}}%%
 graph TD
-    %% Styling and Graph Direction (Top Down)
-    subgraph Data Sources [Enterprise Ecosystem]
-        Jira[Jira Cloud: Sprints & Tickets]
-        Harvest[Harvest: Time & Billing]
-        Confluence[Confluence: Documentation]
+    subgraph Sources["Enterprise Ecosystem"]
+        direction TB
+        Jira["Jira<br/>Tickets · Comments · Fix Versions"]
+        Harvest["Harvest<br/>Time & Commercial Data"]
+        Confluence["Confluence<br/>Notes & Decisions"]
+        M365["Outlook · Teams · SharePoint"]
     end
 
-    subgraph Processing Layer [Delivery Intelligence Engine]
-        API[Webhooks & API Gateway]
-        Engine[AI Exception & Governance Engine]
+    subgraph Processing["Delivery Intelligence Engine"]
+        direction TB
+        Ingest["Ingestion Layer<br/>Webhooks & API"]
+        Correlate["Normalization &<br/>Correlation Layer"]
+        Engine["AI Exception &<br/>Governance Engine"]
     end
 
-    subgraph Outputs [Proactive PMO Interventions]
-        Alerts[Automated Teams/Slack Alerts]
-        Briefings[Daily Executive Risk Briefings]
+    subgraph Outputs["Exception-Based Interventions"]
+        direction TB
+        Flags["Exception Flags<br/>Late · Ownership Loops · SLA Breach<br/>Commercial Mismatch · Blocked / Contradictory"]
+        Alerts["Automated Alerts<br/>(Teams / Slack / Email)"]
+        Brief["Daily & Friday Briefs<br/>+ Recommended Actions & Owners"]
     end
 
-    %% Define Flow Connections
-    Jira --> API
-    Harvest --> API
-    Confluence --> API
+    Jira --> Ingest
+    Harvest --> Ingest
+    Confluence --> Ingest
+    M365 --> Ingest
 
-    API --> Engine
-    Engine --> Flags[Flags: Late Items & Ownership Loops]
-    
+    Ingest --> Correlate --> Engine --> Flags
     Flags --> Alerts
-    Flags --> Briefings
+    Flags --> Brief
+
+    classDef source fill:#EAF2F8,stroke:#1A5276,stroke-width:1px,color:#0A3D62
+    classDef process fill:#0A3D62,stroke:#0A3D62,color:#ffffff
+    classDef output fill:#1A5276,stroke:#0A3D62,color:#ffffff
+
+    class Jira,Harvest,Confluence,M365 source
+    class Ingest,Correlate,Engine process
+    class Flags,Alerts,Brief output
