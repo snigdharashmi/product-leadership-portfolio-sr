@@ -1,3 +1,4 @@
+```mermaid
 %%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#0A3D62', 'primaryTextColor': '#ffffff', 'primaryBorderColor': '#1A5276', 'lineColor': '#1A5276', 'secondaryColor': '#D6EAF8', 'tertiaryColor': '#F8F9F9'}}}%%
 graph TD
     subgraph Sources["Enterprise Ecosystem"]
@@ -6,35 +7,59 @@ graph TD
         Harvest["Harvest<br/>Time & Commercial Data"]
         Confluence["Confluence<br/>Notes & Decisions"]
         M365["Outlook · Teams · SharePoint"]
+        DevOps["Azure DevOps / CI-CD<br/>Builds · Deployments · Tests"]
+        OnPrem["On-Prem Systems<br/>SQL · Logs · Deployment State"]
     end
 
-    subgraph Processing["Delivery Intelligence Engine"]
+    subgraph Hybrid["Hybrid Integration Layer"]
         direction TB
-        Ingest["Ingestion Layer<br/>Webhooks & API"]
-        Correlate["Normalization &<br/>Correlation Layer"]
-        Engine["AI Exception &<br/>Governance Engine"]
+        CloudIngest["Azure Ingestion<br/>Webhooks · API · Graph"]
+        OnPremGateway["On-Prem Integration Gateway<br/>Local Connectors · Event Publisher"]
+    end
+
+    subgraph Azure["Azure AI & Agent Layer"]
+        direction TB
+        Orchestrator["Agent Orchestrator<br/>Supervisor + Specialist Agents"]
+        RAG["RAG & Semantic Search<br/>Azure AI Search + OpenAI"]
+        Workflow["Workflow & Approval Engine<br/>Durable Functions"]
+        Data["Operational Data Platform<br/>Azure SQL · Blob · Audit"]
     end
 
     subgraph Outputs["Exception-Based Interventions"]
         direction TB
         Flags["Exception Flags<br/>Late · Ownership Loops · SLA Breach<br/>Commercial Mismatch · Blocked / Contradictory"]
-        Alerts["Automated Alerts<br/>(Teams / Slack / Email)"]
+        Alerts["Automated Alerts<br/>(Teams / Email)"]
         Brief["Daily & Friday Briefs<br/>+ Recommended Actions & Owners"]
+        Portal["PMO Portal & Copilot<br/>Portfolio · Release · Implementation Views"]
     end
 
-    Jira --> Ingest
-    Harvest --> Ingest
-    Confluence --> Ingest
-    M365 --> Ingest
+    Jira --> CloudIngest
+    Harvest --> CloudIngest
+    Confluence --> CloudIngest
+    M365 --> CloudIngest
+    DevOps --> CloudIngest
+    OnPrem --> OnPremGateway
 
-    Ingest --> Correlate --> Engine --> Flags
+    CloudIngest --> Data
+    OnPremGateway --> Data
+
+    Data --> Orchestrator
+    Data --> RAG
+    Orchestrator --> Workflow
+    RAG --> Orchestrator
+
+    Orchestrator --> Flags
     Flags --> Alerts
     Flags --> Brief
+    Flags --> Portal
 
     classDef source fill:#EAF2F8,stroke:#1A5276,stroke-width:1px,color:#0A3D62
-    classDef process fill:#0A3D62,stroke:#0A3D62,color:#ffffff
+    classDef hybrid fill:#5DADE2,stroke:#1A5276,stroke-width:1px,color:#0A3D62
+    classDef azure fill:#0A3D62,stroke:#0A3D62,color:#ffffff
     classDef output fill:#1A5276,stroke:#0A3D62,color:#ffffff
 
-    class Jira,Harvest,Confluence,M365 source
-    class Ingest,Correlate,Engine process
-    class Flags,Alerts,Brief output
+    class Jira,Harvest,Confluence,M365,DevOps,OnPrem source
+    class CloudIngest,OnPremGateway hybrid
+    class Orchestrator,RAG,Workflow,Data azure
+    class Flags,Alerts,Brief,Portal output
+```
