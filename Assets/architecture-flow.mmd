@@ -1,4 +1,3 @@
-```mermaid
 %%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#0A3D62', 'primaryTextColor': '#ffffff', 'primaryBorderColor': '#1A5276', 'lineColor': '#1A5276', 'secondaryColor': '#D6EAF8', 'tertiaryColor': '#F8F9F9'}}}%%
 graph TD
     subgraph Sources["Enterprise Ecosystem"]
@@ -26,6 +25,42 @@ graph TD
     end
 
     subgraph Outputs["Exception-Based Interventions"]
+        direction TB
+        Flags["Exception Flags<br/>Late · Ownership Loops · SLA Breach<br/>Commercial Mismatch · Blocked / Contradictory"]
+        Alerts["Automated Alerts<br/>(Teams / Email)"]
+        Brief["Daily & Friday Briefs<br/>+ Recommended Actions & Owners"]
+        Portal["PMO Portal & Copilot<br/>Portfolio · Release · Implementation Views"]
+    end
+
+    Jira --> CloudIngest
+    Harvest --> CloudIngest
+    Confluence --> CloudIngest
+    M365 --> CloudIngest
+    DevOps --> CloudIngest
+    OnPrem --> OnPremGateway
+
+    CloudIngest --> Data
+    OnPremGateway --> Data
+
+    Data --> Orchestrator
+    Data --> RAG
+    Orchestrator --> Workflow
+    RAG --> Orchestrator
+
+    Orchestrator --> Flags
+    Flags --> Alerts
+    Flags --> Brief
+    Flags --> Portal
+
+    classDef source fill:#EAF2F8,stroke:#1A5276,stroke-width:1px,color:#0A3D62
+    classDef hybrid fill:#5DADE2,stroke:#1A5276,stroke-width:1px,color:#0A3D62
+    classDef azure fill:#0A3D62,stroke:#0A3D62,color:#ffffff
+    classDef output fill:#1A5276,stroke:#0A3D62,color:#ffffff
+
+    class Jira,Harvest,Confluence,M365,DevOps,OnPrem source
+    class CloudIngest,OnPremGateway hybrid
+    class Orchestrator,RAG,Workflow,Data azure
+    class Flags,Alerts,Brief,Portal output
         direction TB
         Flags["Exception Flags<br/>Late · Ownership Loops · SLA Breach<br/>Commercial Mismatch · Blocked / Contradictory"]
         Alerts["Automated Alerts<br/>(Teams / Email)"]
