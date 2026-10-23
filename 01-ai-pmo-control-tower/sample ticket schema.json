@@ -26,11 +26,11 @@
       "type": "string",
       "example": "sarah.qa@ginue.com"
     },
-    "pingPongCount": {
+    "reassignmentCount": {
       "type": "integer",
       "minimum": 0,
       "example": 4,
-      "description": "Tracks ticket reassignments back and forth between roles/teams to detect accountability bottlenecks."
+      "description": "Tracks ticket reassignments back and forth between roles or teams to measure ownership churn and accountability bottlenecks."
     },
     "status": {
       "type": "string",
