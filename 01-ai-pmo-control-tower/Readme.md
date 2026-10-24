@@ -22,8 +22,8 @@ Hybrid Azure + on-premises · 90-day pilot MVP · 6 clients across 2 delivery mo
 | [04-data-model-and-integrations.md](./04-data-model-and-integrations.md) | Core entities and source system contracts |
 | [05-mvp-scope-and-backlog.md](./05-mvp-scope-and-backlog.md) | Prioritised requirements, epics, and pilot releases |
 | [06-risks-metrics-and-governance.md](./06-risks-metrics-and-governance.md) | Risks, evaluation gates, and 90-day plan |
-| [prompt template.md](./prompt%20template.md) | Example agent prompt templates for key workflows |
-| [sample ticket schema.json](./sample%20ticket%20schema.json) | Sample normalised ticket schema |
+| [prompt-template.md](./prompt-template.md) | Example agent prompt templates for key workflows |
+| [sample-ticket-schema.json](./sample-ticket-schema.json) | Sample normalised ticket schema |
 | [sample-tickets.json](./sample-tickets.json) | Synthetic normalised tickets across support and implementation clients |
 | [sample-release-proposal.md](./sample-release-proposal.md) | Example agent-generated monthly release recommendation |
 | [prompts/](./prompts/) | Focused prompt templates (release planning, risk detection) |
