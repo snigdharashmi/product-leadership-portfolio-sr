@@ -1,27 +1,4 @@
 graph TD
-    subgraph Legacy_Sources ["Unstructured Legacy Data"]
-        Docs["Legacy Docs & PDFs"]
-        Emails["Historical Emails"]
-        JiraDump["Archived Jira Tickets"]
-    end
-
-    subgraph AI_Pipeline ["Vertex AI & RAG Pipeline"]
-        GCS["Google Cloud Storage Buckets"] --> Parser["Vertex AI / Gemini Parsing Engine"]
-        Docs --> GCS
-        Emails --> GCS
-        JiraDump --> GCS
-        
-        Parser --> Embeddings["Vector Database & RAG Index"]
-    end
-
-    subgraph Internal_Tooling ["Developer Enablement"]
-        Embeddings --> API_Search["FastAPI Backend Search"]
-        API_Search --> Gradio["Gradio UI Chatbot<br/>(Internal Engineering Teams)"]
-    end
-
-
-
-graph TD
     subgraph Perimeter ["Perimeter & Edge Defense"]
         Client["External Clients & Partners"] -->|HTTPS / TLS 1.3| WAF["Cloud Armor WAF & Third-Party Next-Gen Firewall"]
         WAF --> LB["Global HTTP(S) External Load Balancer"]
@@ -36,30 +13,40 @@ graph TD
         end
 
         subgraph Data_Tier ["Secure Multi-Tenant Data Tier"]
-            GKE --> CloudSQL["Cloud SQL (PostgreSQL)<br/>Multi-Tenant Encrypted DB (Customer-Managed Encryption Keys - CMEK)"]
+            GKE --> CloudSQL["Cloud SQL (PostgreSQL)<br/>Multi-Tenant Encrypted DB (CMEK)"]
             GKE --> BigQuery["BigQuery<br/>Auditable Audit Logs & Regulatory Data Retention"]
         end
     end
 
     subgraph Migration_Pipeline ["Legacy Data & Parallel Run Pipeline"]
-        Legacy["On-Premises Legacy Monolith<br/>& Multi-Tenant Database"] -->|Storage Transfer Service / Database Migration Service| VPC_Bridge["Cloud Interconnect / Dedicated VPN"]
+        Legacy["On-Premises Legacy Monolith<br/>& Multi-Tenant Database"] -->|Storage Transfer & DMS| VPC_Bridge["Cloud Interconnect / Dedicated VPN"]
         VPC_Bridge --> CloudSQL
         Legacy -.->|Dual-Write & Shadow Traffic<br/>Parallel Run Phase| GKE
+    end
+
+    subgraph AI_Knowledge_Pipeline ["Vertex AI / RAG Knowledge Hub"]
+        LegacyDocs["Legacy Docs, Emails & Jira Dumps"] --> GCS["Google Cloud Storage Buckets"]
+        GCS --> Parser["Vertex AI / Gemini Parsing Engine"]
+        Parser --> VectorDB["Vector Database & RAG Index"]
+        VectorDB --> FastAPI["FastAPI Backend Search"]
+        FastAPI --> GradioUI["Gradio UI Chatbot<br/>(Internal Tech Teams)"]
     end
 
     subgraph Security_SRE ["Governance, Security & SRE Control Tower"]
         IAM["Cloud IAM & VPC Service Controls"] --> GCP_VPC
         KMS["Cloud KMS (HSM Backed)"] --> CloudSQL
-        SecOps["Cloud Logging, Security Command Center & Chronicle SIEM"] -->|SEBI Auditable Telemetry| GKE
-        SRE["Cloud Operations Suite (Prometheus / Grafana / SLI/SLO Alerts)"] --> GKE
+        SecOps["Cloud Logging & Chronicle SIEM"] -->|SEBI Auditable Telemetry| GKE
+        SRE["Cloud Operations Suite (Prometheus / Grafana)"] --> GKE
     end
 
     classDef perimeter fill:#EAF2F8,stroke:#1A5276,stroke-width:1px,color:#0A3D62;
     classDef vpc fill:#D6EAF8,stroke:#1A5276,stroke-width:1px,color:#0A3D62;
     classDef migration fill:#F8F9F9,stroke:#1A5276,stroke-width:1px,color:#333;
+    classDef ai fill:#FCF3CF,stroke:#B7950B,stroke-width:1px,color:#7D6608;
     classDef sec fill:#E8F8F5,stroke:#117A65,stroke-width:1px,color:#0E6251;
 
     class Client,WAF,LB perimeter;
     class API_Gateway,GKE,CloudSQL,BigQuery vpc;
     class Legacy,VPC_Bridge migration;
+    class LegacyDocs,GCS,Parser,VectorDB,FastAPI,GradioUI ai;
     class IAM,KMS,SecOps,SRE sec;
