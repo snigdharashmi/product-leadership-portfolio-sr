@@ -1,1 +1,45 @@
+graph TD
+    subgraph Sources ["1. Legacy Data & Governance Gate"]
+        Docs["Legacy Docs & PDFs"]
+        Emails["Historical Emails"]
+        JiraDump["Archived Jira Tickets"]
+        Sanitize["PII Sanitization & Access Control<br/>(PMO Compliance Filter)"]
+        Docs --> Sanitize
+        Emails --> Sanitize
+        JiraDump --> Sanitize
+    end
 
+    subgraph Ingestion ["2. Processing & Embedding Pipeline"]
+        Sanitize --> GCS["GCS Secured Staging Buckets"]
+        GCS --> Chunk["Semantic Document Chunking Strategy"]
+        Chunk --> Parser["Vertex AI / Gemini Parsing & Extraction Engine"]
+        Parser --> Embeddings["Vertex AI Embeddings API"]
+        Embeddings --> VectorDB["Vector Database & Index"]
+    end
+
+    subgraph RAG_Engine ["3. RAG Orchestration Layer"]
+        VectorDB --> Retrieve["Hybrid Search & Semantic Re-ranking"]
+        Retrieve --> Context["Context Assembly & Prompt Guardrails"]
+    end
+
+    subgraph PMO_Validation ["4. PMO Validation & Baselining Gate"]
+        Context --> HITL["Human-in-the-Loop (SME) Verification<br/>Gold Dataset Testing & Hallucination Audits"]
+        HITL -->|Accuracy Baseline Achieved| Signoff["Delivery Governance Sign-off"]
+    end
+
+    subgraph Tooling ["5. Developer Enablement UI"]
+        Signoff --> API_Search["FastAPI Microservice Backend"]
+        API_Search --> Gradio["Gradio UI Chatbot<br/>(Internal Engineering Teams)"]
+    end
+
+    classDef source fill:#EAF2F8,stroke:#1A5276,stroke-width:1px,color:#0A3D62;
+    classDef process fill:#D6EAF8,stroke:#1A5276,stroke-width:1px,color:#0A3D62;
+    classDef rag fill:#FCF3CF,stroke:#B7950B,stroke-width:1px,color:#7D6608;
+    classDef pmo fill:#E8F8F5,stroke:#117A65,stroke-width:1px,color:#0E6251;
+    classDef ui fill:#F8F9F9,stroke:#1A5276,stroke-width:1px,color:#333;
+
+    class Docs,Emails,JiraDump,Sanitize source;
+    class GCS,Chunk,Parser,Embeddings,VectorDB process;
+    class Retrieve,Context rag;
+    class HITL,Signoff pmo;
+    class API_Search,Gradio ui;
