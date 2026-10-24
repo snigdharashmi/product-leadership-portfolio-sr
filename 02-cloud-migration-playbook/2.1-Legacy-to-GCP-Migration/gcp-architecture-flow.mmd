@@ -1,1 +1,42 @@
+graph TD
+    subgraph Perimeter ["Perimeter & Edge Defense"]
+        Client["External Clients & Partners"] -->|HTTPS / TLS 1.3| WAF["Cloud Armor WAF & Third-Party Next-Gen Firewall"]
+        WAF --> LB["Global HTTP(S) External Load Balancer"]
+    end
 
+    subgraph GCP_VPC ["Secure Enterprise VPC (VPC Service Controls)"]
+        direction TB
+        LB --> API_Gateway["Apigee API Gateway / Cloud Endpoints<br/>(Client-Facing REST APIs & Node.js Microservices)"]
+        
+        subgraph Compute_Tier ["Containerized Microservices Tier"]
+            API_Gateway --> GKE["Google Kubernetes Engine (GKE Autopilot)<br/>Isolated Pods with Istio Service Mesh"]
+        end
+
+        subgraph Data_Tier ["Secure Multi-Tenant Data Tier"]
+            GKE --> CloudSQL["Cloud SQL (PostgreSQL)<br/>Multi-Tenant Encrypted DB (Customer-Managed Encryption Keys - CMEK)"]
+            GKE --> BigQuery["BigQuery<br/>Auditable Audit Logs & Regulatory Data Retention"]
+        end
+    end
+
+    subgraph Migration_Pipeline ["Legacy Data & Parallel Run Pipeline"]
+        Legacy["On-Premises Legacy Monolith<br/>& Multi-Tenant Database"] -->|Storage Transfer Service / Database Migration Service| VPC_Bridge["Cloud Interconnect / Dedicated VPN"]
+        VPC_Bridge --> CloudSQL
+        Legacy -.->|Dual-Write & Shadow Traffic<br/>Parallel Run Phase| GKE
+    end
+
+    subgraph Security_SRE ["Governance, Security & SRE Control Tower"]
+        IAM["Cloud IAM & VPC Service Controls"] --> GCP_VPC
+        KMS["Cloud KMS (HSM Backed)"] --> CloudSQL
+        SecOps["Cloud Logging, Security Command Center & Chronicle SIEM"] -->|SEBI Auditable Telemetry| GKE
+        SRE["Cloud Operations Suite (Prometheus / Grafana / SLI/SLO Alerts)"] --> GKE
+    end
+
+    classDef perimeter fill:#EAF2F8,stroke:#1A5276,stroke-width:1px,color:#0A3D62;
+    classDef vpc fill:#D6EAF8,stroke:#1A5276,stroke-width:1px,color:#0A3D62;
+    classDef migration fill:#F8F9F9,stroke:#1A5276,stroke-width:1px,color:#333;
+    classDef sec fill:#E8F8F5,stroke:#117A65,stroke-width:1px,color:#0E6251;
+
+    class Client,WAF,LB perimeter;
+    class API_Gateway,GKE,CloudSQL,BigQuery vpc;
+    class Legacy,VPC_Bridge migration;
+    class IAM,KMS,SecOps,SRE sec;
