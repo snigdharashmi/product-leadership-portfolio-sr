@@ -1,0 +1,14 @@
+{
+  "issue_id": "MIG-104",
+  "title": "Legacy Billing DB Extraction & GoldenGate Replication Strategy",
+  "project": "Legacy-to-GCP",
+  "status": "In Progress",
+  "description": "Extract 4.2TB of transactional data from the on-prem Oracle 19c database into GCP Cloud SQL using Oracle GoldenGate. Watch out for timezone discrepancies in legacy timestamps.",
+  "comments": [
+    {
+      "author": "DBA Lead",
+      "date": "2026-10-14",
+      "comment": "Initial pump configuration created. Initial load will require a scheduled maintenance window."
+    }
+  ]
+}

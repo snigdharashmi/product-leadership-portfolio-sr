@@ -1,0 +1,3 @@
+url_id,target_url,category,extraction_depth
+URL-001,https://example-energy-vendor.com/docs/api-v1,public_docs,2
+URL-002,https://example-energy-vendor.com/pricing/midstream,pricing_sheet,1

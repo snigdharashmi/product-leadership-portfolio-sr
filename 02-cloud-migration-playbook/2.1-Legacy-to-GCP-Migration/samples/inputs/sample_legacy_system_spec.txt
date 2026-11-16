@@ -1,0 +1,5 @@
+SYSTEM SPECIFICATION: LEGACY BILLING ENGINE (v4.2)
+Host: onprem-ora-prod-01.corp.local
+Database: Oracle 19c Enterprise Edition (4.2 TB)
+Downstream Consumers: ERP General Ledger, Customer Portal API, Regulatory Reporting Batch
+SLA Tier: Tier-1 (RPO < 5 mins, RTO < 30 mins)
